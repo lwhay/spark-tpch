@@ -92,10 +92,11 @@ case class Supplier(
 abstract class TpchQuery {
 
   // read files from local FS
-  val INPUT_DIR = "file://" + new File(".").getAbsolutePath() + "/dbgen"
+  // val INPUT_DIR = "file://" + new File(".").getAbsolutePath() + "/dbgen"
 
   // read from hdfs
-  // val INPUT_DIR: String = "/dbgen"
+  // val INPUT_DIR: String = "hdfs://11.11.11.62:9000/warehouse/tpch"//"/dbgen"
+  val INPUT_DIR: String = "hdfs://127.0.0.1:9000/warehouse/tpch"//"/dbgen"
 
   // if set write results to hdfs, if null write to stdout
   // val OUTPUT_DIR: String = "/tpch"
