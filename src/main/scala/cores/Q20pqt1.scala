@@ -11,7 +11,8 @@ class Q20pqt1 extends TpchQueryPqt {
 
   import spark.implicits._
 
-  override def execute(): Unit = {
+  override def execute(path: String, typeId: Int): Unit = {
+    init(path, typeId)
     val forest = udf { (x: String) => x.contains("green|lemon|red") }
 
     val res = nested.filter(forest($"p_name")).select(explode($"PartsuppList.LineitemList"), $"PartsuppList.ps_suppkey",

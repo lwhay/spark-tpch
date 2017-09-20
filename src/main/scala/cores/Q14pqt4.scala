@@ -11,8 +11,8 @@ class Q14pqt4 extends TpchQueryPqt {
 
   import spark.implicits._
 
-  override def execute(): Unit = {
-
+  override def execute(path: String, typeId: Int): Unit = {
+    init(path, typeId)
     val res = nested.select(explode($"PartsuppList.LineitemList"), $"p_type")
       .filter($"p_name".startsWith("PROMO"))
       .select(explode($"col"), $"p_type")

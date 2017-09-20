@@ -2,6 +2,7 @@ package main.scala.cores
 
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.sql.functions.{sum, udf, explode}
+import com.databricks.spark.avro._
 
 /**
   * Created by michael on 9/18/17.
@@ -40,7 +41,53 @@ object ParquetTest {
 
     runPlan2(spark)
 
+    runJsonSchema(spark)
+
+    runJsonPeudo1(spark)
+
+    runAvroSchema(spark)
+
+    runAvroPeudo1(spark)
+
     spark.stop()
+  }
+
+  private def runJsonSchema(spark: SparkSession): Unit = {
+    val pq = spark.read.json("src/resources/result.json")
+    pq.printSchema()
+  }
+
+  private def runJsonPeudo1(spark: SparkSession) : Unit = {
+    val pq = spark.read.json("src/resources/result.json")
+    val forest = udf { (x: String) => x.contains("green|lemon|red") }
+
+    import spark.implicits._
+
+    pq.filter(forest($"p_name")).select(explode($"PartsuppList.LineitemList"), $"PartsuppList.ps_suppkey",
+      $"PartsuppList.ps_availqty")
+      .select(explode($"col"), $"ps_suppkey", $"ps_availqty")
+      .filter($"col.l_shipdate" >= "1993-05-01"
+        && $"col.l_shipdate" < "1994-01-01")
+      .select($"ps_suppkey", $"ps_availqty").distinct()
+  }
+
+  private def runAvroSchema(spark: SparkSession): Unit = {
+    val pq = spark.read.format("com.databricks.spark.avro").load("src/resources/result.avro")
+    pq.printSchema()
+  }
+
+  private def runAvroPeudo1(spark: SparkSession) : Unit = {
+    val pq = spark.read.format("com.databricks.spark.avro").load("src/resources/result.avro")
+    val forest = udf { (x: String) => x.contains("green|lemon|red") }
+
+    import spark.implicits._
+
+    pq.filter(forest($"p_name")).select(explode($"PartsuppList.LineitemList"), $"PartsuppList.ps_suppkey",
+      $"PartsuppList.ps_availqty")
+      .select(explode($"col"), $"ps_suppkey", $"ps_availqty")
+      .filter($"col.l_shipdate" >= "1993-05-01"
+        && $"col.l_shipdate" < "1994-01-01")
+      .select($"ps_suppkey", $"ps_availqty").distinct()
   }
 
   private def runSchema(spark: SparkSession): Unit = {

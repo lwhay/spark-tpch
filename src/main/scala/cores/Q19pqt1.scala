@@ -11,7 +11,8 @@ class Q19pqt1 extends TpchQueryPqt {
 
   import spark.implicits._
 
-  override def execute(): Unit = {
+  override def execute(path: String, typeId: Int): Unit = {
+    init(path, typeId)
     val sm = udf { (x: String) => x.matches("SM|MED|LG|WRAP") }
 
     val res = nested.select(explode($"PartsuppList.LineitemList"))

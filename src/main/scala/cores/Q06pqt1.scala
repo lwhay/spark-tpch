@@ -1,6 +1,8 @@
 package main.scala.cores
 
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
+import sun.awt.datatransfer.DataTransferer.DataFlavorComparator
 
 /**
  * TPC-H Query 6
@@ -11,8 +13,8 @@ class Q06pqt1 extends TpchQueryPqt {
 
   import spark.implicits._
 
-  override def execute(): Unit = {
-
+  override def execute(path: String, typeId: Int): Unit = {
+    init(path, typeId)
     val res = nested.select(explode($"PartsuppList.LineitemList"))
       .select(explode($"col"))
       .select($"col.l_discount", $"col.l_shipdate", $"col.l_quantity", $"col.l_extendedprice")

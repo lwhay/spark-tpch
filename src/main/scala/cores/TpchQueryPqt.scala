@@ -16,9 +16,18 @@ abstract class TpchQueryPqt {
 
   val spark = SparkSession.builder().appName("TPC-H " + className).getOrCreate()
 
-  val nested = spark.read.parquet(INPUT_DIR + "/result.parquet")
+  var nested: DataFrame = null // = spark.read.parquet(INPUT_DIR + "/result.parquet")
 
-  def execute(): Unit
+  def execute(path: String, typeId: Int): Unit
+
+  def init(path: String, typeId: Int): Unit = {
+    if (typeId == 0)
+      nested = spark.read.json(INPUT_DIR + "/" + path)
+    else if (typeId == 1)
+      nested = spark.read.format("com.databricks.spark.avro").load(INPUT_DIR + "/" + path)
+    else
+      nested = spark.read.parquet(INPUT_DIR + "/" + path)
+  }
 
   def outputDF(df: DataFrame): Unit = {
 
@@ -33,14 +42,16 @@ object TpchQueryPqt {
   /**
     * Execute query reflectively
     */
-  def executeQuery(queryNo: Int, countNo: Int): Unit = {
+  def executeQuery(queryNo: Int, countNo: Int, path: String, typeId: Int): Unit = {
     assert(queryNo >= 1 && queryNo <= 32, "Invalid query number")
-    Class.forName(f"main.scala.cores.Q${queryNo}%02dpqt${countNo}%1d").newInstance.asInstanceOf[{ def execute }].execute
+
+    Class.forName(f"main.scala.cores.Q${queryNo}%02dpqt${countNo}%1d")
+      .newInstance.asInstanceOf[{ def execute(path: String, typeId: Int) }].execute(path, typeId)
   }
 
   def main(args: Array[String]): Unit = {
-    if (args.length == 2)
-      executeQuery(args(0).toInt, args(1).toInt)
+    if (args.length == 4)
+      executeQuery(args(0).toInt, args(1).toInt, args(2), args(3).toInt)
     else
       throw new RuntimeException("Invalid number of arguments")
   }
