@@ -49,6 +49,10 @@ object ParquetTest {
 
     runAvroPeudo1(spark)
 
+    runAvroPlan1(spark)
+
+    runJsonPlan1(spark)
+
     spark.stop()
   }
 
@@ -71,6 +75,23 @@ object ParquetTest {
       .select($"ps_suppkey", $"ps_availqty").distinct()
   }
 
+  private def runJsonPlan1(spark: SparkSession) : Unit = {
+    val pq = spark.read.json("src/resources/result.json")
+    val forest = udf { (x: String) => x.contains("green|lemon|red") }
+
+    import spark.implicits._
+
+    pq.select(explode($"PartsuppList.LineitemList"))
+      .select(explode($"col"))
+      .select($"col.l_discount", $"col.l_shipdate", $"col.l_quantity", $"col.l_extendedprice")
+      .filter($"col.l_shipdate" >= "1992-01-01"
+        && $"col.l_shipdate" < "1994-01-01"
+        && $"col.l_discount" >= 0
+        && $"col.l_discount" <= 0.04
+        && $"col.l_quantity" < 40)
+      .agg(sum($"l_extendedprice" * $"l_discount")).explain()
+  }
+
   private def runAvroSchema(spark: SparkSession): Unit = {
     val pq = spark.read.format("com.databricks.spark.avro").load("src/resources/result.avro")
     pq.printSchema()
@@ -88,6 +109,23 @@ object ParquetTest {
       .filter($"col.l_shipdate" >= "1993-05-01"
         && $"col.l_shipdate" < "1994-01-01")
       .select($"ps_suppkey", $"ps_availqty").distinct()
+  }
+
+  private def runAvroPlan1(spark: SparkSession) : Unit = {
+    val pq = spark.read.format("com.databricks.spark.avro").load("src/resources/result.avro")
+    val forest = udf { (x: String) => x.contains("green|lemon|red") }
+
+    import spark.implicits._
+
+    pq.select(explode($"PartsuppList.LineitemList"))
+      .select(explode($"col"))
+      .select($"col.l_discount", $"col.l_shipdate", $"col.l_quantity", $"col.l_extendedprice")
+      .filter($"col.l_shipdate" >= "1992-01-01"
+        && $"col.l_shipdate" < "1994-01-01"
+        && $"col.l_discount" >= 0
+        && $"col.l_discount" <= 0.04
+        && $"col.l_quantity" < 40)
+      .agg(sum($"l_extendedprice" * $"l_discount")).explain()
   }
 
   private def runSchema(spark: SparkSession): Unit = {
