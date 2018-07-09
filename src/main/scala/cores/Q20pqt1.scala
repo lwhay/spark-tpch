@@ -3,16 +3,16 @@ package main.scala.cores
 import org.apache.spark.sql.functions._
 
 /**
- * TPC-H Query 6
- * Savvas Savvides <savvas@purdue.edu>
- *
- */
+  * TPC-H Query 6
+  * Wenhai Li <lwh@whu.edu.cn>
+  *
+  */
 class Q20pqt1 extends TpchQueryPqt {
 
   import spark.implicits._
 
-  override def execute(path: String, typeId: Int): Unit = {
-    init(path, typeId)
+  override def execute(path: String, typeId: Int, url: String): Unit = {
+    init(path, typeId, url)
     val forest = udf { (x: String) => x.contains("green|lemon|red") }
 
     val res = nested.filter(forest($"p_name")).select(explode($"PartsuppList.LineitemList"), $"PartsuppList.ps_suppkey",

@@ -3,16 +3,16 @@ package main.scala.cores
 import org.apache.spark.sql.functions._
 
 /**
- * TPC-H Query 6
- * Savvas Savvides <savvas@purdue.edu>
- *
- */
+  * TPC-H Query 6
+  * Wenhai Li <lwh@whu.edu.cn>
+  *
+  */
 class Q14pqt3 extends TpchQueryPqt {
 
   import spark.implicits._
 
-  override def execute(path: String, typeId: Int): Unit = {
-    init(path, typeId)
+  override def execute(path: String, typeId: Int, url: String): Unit = {
+    init(path, typeId, url)
     val res = nested.select(explode($"PartsuppList.LineitemList"), $"p_type")
       .filter($"p_name".startsWith("PROMO"))
       .select(explode($"col"), $"p_type")

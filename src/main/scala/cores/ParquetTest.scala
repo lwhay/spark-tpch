@@ -41,15 +41,15 @@ object ParquetTest {
 
     runPlan2(spark)
 
-    runJsonSchema(spark)
-
-    runJsonPeudo1(spark)
-
     runAvroSchema(spark)
 
     runAvroPeudo1(spark)
 
     runAvroPlan1(spark)
+
+    runJsonSchema(spark)
+
+    runJsonPeudo1(spark)
 
     runJsonPlan1(spark)
 
@@ -57,12 +57,12 @@ object ParquetTest {
   }
 
   private def runJsonSchema(spark: SparkSession): Unit = {
-    val pq = spark.read.json("src/resources/result.json")
+    val pq = spark.read.json("src/resources/result100.json")
     pq.printSchema()
   }
 
   private def runJsonPeudo1(spark: SparkSession) : Unit = {
-    val pq = spark.read.json("src/resources/result.json")
+    val pq = spark.read.json("src/resources/result100.json")
     val forest = udf { (x: String) => x.contains("green|lemon|red") }
 
     import spark.implicits._
@@ -76,7 +76,7 @@ object ParquetTest {
   }
 
   private def runJsonPlan1(spark: SparkSession) : Unit = {
-    val pq = spark.read.json("src/resources/result.json")
+    val pq = spark.read.json("src/resources/result100.json")
     val forest = udf { (x: String) => x.contains("green|lemon|red") }
 
     import spark.implicits._
