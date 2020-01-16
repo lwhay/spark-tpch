@@ -1,4 +1,4 @@
-package main.scala.tpch
+package main.scala
 
 import java.io.File
 import java.net._

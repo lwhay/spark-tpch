@@ -1,4 +1,4 @@
-package main.scala.tpch
+package main.scala
 
 import org.apache.spark.sql.functions.countDistinct
 import org.apache.spark.sql.functions.max

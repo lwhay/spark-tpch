@@ -1,4 +1,4 @@
-package main.scala.tpch
+package main.scala
 
 import org.apache.spark.sql.functions.count
 import org.apache.spark.sql.functions.sum
