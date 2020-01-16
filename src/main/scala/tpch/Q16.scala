@@ -1,4 +1,4 @@
-package main.scala
+package main.scala.tpch
 
 import org.apache.spark.sql.functions.countDistinct
 import org.apache.spark.sql.functions.udf

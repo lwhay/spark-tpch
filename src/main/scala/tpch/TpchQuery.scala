@@ -1,6 +1,7 @@
-package main.scala
+package main.scala.tpch
 
 import java.io.File
+import java.net._
 import org.apache.spark.sql._
 
 // TPC-H table schemas
@@ -95,8 +96,9 @@ abstract class TpchQuery {
   // val INPUT_DIR = "file://" + new File(".").getAbsolutePath() + "/dbgen"
 
   // read from hdfs
-  // val INPUT_DIR: String = "hdfs://11.11.11.62:9000/warehouse/tpch"//"/dbgen"
-  val INPUT_DIR: String = "hdfs://20.20.20.31:9004/warehouse/tpch" //"/dbgen"
+  val localhost: InetAddress = InetAddress.getLocalHost
+  val localIpAddress: String = localhost.getHostAddress
+  val INPUT_DIR: String = "hdfs://" + localIpAddress + ":9004/warehouse/tpch" //"/dbgen"
 
   // if set write results to hdfs, if null write to stdout
   // val OUTPUT_DIR: String = "/tpch"
