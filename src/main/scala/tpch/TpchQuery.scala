@@ -83,22 +83,24 @@ case class Supplier(
                      s_comment: String)
 
 /**
-  * Parent class for TPC-H queries.
-  *
-  * Defines schemas for tables and reads pipe ("|") separated text files into these tables.
-  *
-  * Savvas Savvides <savvas@purdue.edu>
-  *
-  */
+ * Parent class for TPC-H queries.
+ *
+ * Defines schemas for tables and reads pipe ("|") separated text files into these tables.
+ *
+ * Savvas Savvides <savvas@purdue.edu>
+ *
+ */
 abstract class TpchQuery {
 
   // read files from local FS
   // val INPUT_DIR = "file://" + new File(".").getAbsolutePath() + "/dbgen"
 
   // read from hdfs
-  val localhost: InetAddress = InetAddress.getLocalHost
+  /*val localhost: InetAddress = InetAddress.getLocalHost
   val localIpAddress: String = localhost.getHostAddress
-  val INPUT_DIR: String = "hdfs://" + localIpAddress + ":9004/warehouse/tpch" //"/dbgen"
+  val INPUT_DIR: String = "hdfs://" + localIpAddress + ":9004/warehouse/tpch"*/
+  //"/dbgen"
+  val INPUT_DIR: String = "hdfs://172.16.2.209:9004/warehouse/tpch" //"/dbgen"
 
   // if set write results to hdfs, if null write to stdout
   // val OUTPUT_DIR: String = "/tpch"
@@ -112,8 +114,8 @@ abstract class TpchQuery {
   import spark.implicits._
 
   /**
-    * implemented in children classes and hold the actual query
-    */
+   * implemented in children classes and hold the actual query
+   */
   def execute(url: String): Unit = {
   }
 
@@ -129,8 +131,8 @@ abstract class TpchQuery {
 object TpchQuery {
 
   /**
-    * Execute query reflectively
-    */
+   * Execute query reflectively
+   */
   def executeQuery(queryNo: Int, url: String): Unit = {
     assert(queryNo >= 1 && queryNo <= 32, "Invalid query number")
     Class.forName(f"main.scala.Q${queryNo}%02d").newInstance.asInstanceOf[ {def execute(url: String)}].execute(url)
