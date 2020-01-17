@@ -104,11 +104,10 @@ abstract class TpchQuery {
   // if set write results to hdfs, if null write to stdout
   // val OUTPUT_DIR: String = "/tpch"
   val OUTPUT_DIR: String = null
-
   // get the name of the class excluding dollar signs and package
-  //val className = this.getClass.getName.split("\\.").last.replaceAll("\\$", "")
+  val className = this.getClass.getName.split("\\.").last.replaceAll("\\$", "")
 
-  val spark = SparkSession.builder().appName("TPC-H " /*+ className*/).getOrCreate()
+  val spark = SparkSession.builder().appName("TPC-H " + className).getOrCreate()
 
   import spark.implicits._
 
@@ -123,7 +122,7 @@ abstract class TpchQuery {
     if (OUTPUT_DIR == null || OUTPUT_DIR == "")
       df.collect().foreach(println)
     else
-      df.write.mode("overwrite").json(OUTPUT_DIR + "/" /*+ className*/ + "query.out") // json to avoid alias
+      df.write.mode("overwrite").json(OUTPUT_DIR + "/" + className + ".out") // json to avoid alias
   }
 }
 
