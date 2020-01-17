@@ -1,4 +1,4 @@
-package main.scala
+package main.scala.tpch
 
 import java.io.File
 import java.net._
@@ -96,11 +96,10 @@ abstract class TpchQuery {
   // val INPUT_DIR = "file://" + new File(".").getAbsolutePath() + "/dbgen"
 
   // read from hdfs
-  /*val localhost: InetAddress = InetAddress.getLocalHost
+  val localhost: InetAddress = InetAddress.getLocalHost
   val localIpAddress: String = localhost.getHostAddress
-  val INPUT_DIR: String = "hdfs://" + localIpAddress + ":9004/warehouse/tpch"*/
-  //"/dbgen"
-  val INPUT_DIR: String = "hdfs://172.16.2.209:9004/warehouse/tpch" //"/dbgen"
+  val INPUT_DIR: String = "hdfs://" + localIpAddress + ":9004/warehouse/tpch" //"/dbgen"
+  //val INPUT_DIR: String = "hdfs://172.16.2.209:9004/warehouse/tpch" //"/dbgen"
 
   // if set write results to hdfs, if null write to stdout
   // val OUTPUT_DIR: String = "/tpch"
@@ -135,7 +134,7 @@ object TpchQuery {
    */
   def executeQuery(queryNo: Int, url: String): Unit = {
     assert(queryNo >= 1 && queryNo <= 32, "Invalid query number")
-    Class.forName(f"main.scala.Q${queryNo}%02d").newInstance.asInstanceOf[ {def execute(url: String)}].execute(url)
+    Class.forName(f"main.scala.tpch.Q${queryNo}%02d").newInstance.asInstanceOf[ {def execute(url: String)}].execute(url)
   }
 
   def main(args: Array[String]): Unit = {

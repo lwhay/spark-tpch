@@ -1,4 +1,4 @@
-package main.scala
+package main.scala.tpch
 
 import org.apache.spark.sql.functions.max
 import org.apache.spark.sql.functions.sum
