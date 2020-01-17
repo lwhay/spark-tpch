@@ -106,9 +106,9 @@ abstract class TpchQuery {
   val OUTPUT_DIR: String = null
 
   // get the name of the class excluding dollar signs and package
-  val className = this.getClass.getName.split("\\.").last.replaceAll("\\$", "")
+  //val className = this.getClass.getName.split("\\.").last.replaceAll("\\$", "")
 
-  val spark = SparkSession.builder().appName("TPC-H " + className).getOrCreate()
+  val spark = SparkSession.builder().appName("TPC-H " /*+ className*/).getOrCreate()
 
   import spark.implicits._
 
