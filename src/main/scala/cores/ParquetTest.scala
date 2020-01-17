@@ -2,7 +2,7 @@ package main.scala.cores
 
 import org.apache.spark.sql.{SparkSession}
 import org.apache.spark.sql.functions.{sum, udf, explode}
-import com.databricks.spark.avro._
+import org.apache.spark.sql.avro._
 
 /**
   * Created by michael on 9/18/17.

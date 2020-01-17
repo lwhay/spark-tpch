@@ -1,6 +1,7 @@
-package main.scala
+package main.scala.tpch
 
 import java.io.File
+import java.net._
 import org.apache.spark.sql._
 
 // TPC-H table schemas
@@ -82,26 +83,27 @@ case class Supplier(
                      s_comment: String)
 
 /**
-  * Parent class for TPC-H queries.
-  *
-  * Defines schemas for tables and reads pipe ("|") separated text files into these tables.
-  *
-  * Savvas Savvides <savvas@purdue.edu>
-  *
-  */
+ * Parent class for TPC-H queries.
+ *
+ * Defines schemas for tables and reads pipe ("|") separated text files into these tables.
+ *
+ * Savvas Savvides <savvas@purdue.edu>
+ *
+ */
 abstract class TpchQuery {
 
   // read files from local FS
   // val INPUT_DIR = "file://" + new File(".").getAbsolutePath() + "/dbgen"
 
   // read from hdfs
-  // val INPUT_DIR: String = "hdfs://11.11.11.62:9000/warehouse/tpch"//"/dbgen"
-  val INPUT_DIR: String = "hdfs://20.20.20.31:9004/warehouse/tpch" //"/dbgen"
+  val localhost: InetAddress = InetAddress.getLocalHost
+  val localIpAddress: String = localhost.getHostAddress
+  val INPUT_DIR: String = "hdfs://" + localIpAddress + ":9004/warehouse/tpch" //"/dbgen"
+  //val INPUT_DIR: String = "hdfs://172.16.2.209:9004/warehouse/tpch" //"/dbgen"
 
   // if set write results to hdfs, if null write to stdout
   // val OUTPUT_DIR: String = "/tpch"
   val OUTPUT_DIR: String = null
-
   // get the name of the class excluding dollar signs and package
   val className = this.getClass.getName.split("\\.").last.replaceAll("\\$", "")
 
@@ -110,8 +112,8 @@ abstract class TpchQuery {
   import spark.implicits._
 
   /**
-    * implemented in children classes and hold the actual query
-    */
+   * implemented in children classes and hold the actual query
+   */
   def execute(url: String): Unit = {
   }
 
@@ -127,11 +129,11 @@ abstract class TpchQuery {
 object TpchQuery {
 
   /**
-    * Execute query reflectively
-    */
+   * Execute query reflectively
+   */
   def executeQuery(queryNo: Int, url: String): Unit = {
     assert(queryNo >= 1 && queryNo <= 32, "Invalid query number")
-    Class.forName(f"main.scala.Q${queryNo}%02d").newInstance.asInstanceOf[ {def execute(url: String)}].execute(url)
+    Class.forName(f"main.scala.tpch.Q${queryNo}%02d").newInstance.asInstanceOf[ {def execute(url: String)}].execute(url)
   }
 
   def main(args: Array[String]): Unit = {
