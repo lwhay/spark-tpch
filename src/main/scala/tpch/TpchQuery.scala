@@ -123,7 +123,7 @@ abstract class TpchQuery {
     if (OUTPUT_DIR == null || OUTPUT_DIR == "")
       df.collect().foreach(println)
     else
-      df.write.mode("overwrite").json(OUTPUT_DIR + "/" + className + ".out") // json to avoid alias
+      df.write.mode("overwrite").json(OUTPUT_DIR + "/" /*+ className*/ + "query.out") // json to avoid alias
   }
 }
 
